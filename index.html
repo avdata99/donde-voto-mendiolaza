@@ -35,17 +35,59 @@
     
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
   <h1 class="display-4">Donde Voto Mendiolaza 2019</h1>
+  <p class="lead">Elegí el formato de búsqueda y fijate donde votás el próximo 14 de abril</p>
   <select id='tipo'>
       <option value='DNI' selected>DNI</option>
       <option value='APELLIDO'>Apellido</option>
   </select>
-  <p class="lead">Inserta el DNI</p>
+  <input type="text" id='txt'/>
+  <button id='buscar'>Buscar</button>
+  <img id='loading' src='loading.gif' style='display:none; max-width: 200px;' />
+  <div id='resultados'>
+
+  </div>
+  
 </div>
 
 
 <script>
     $(function() {
-        alert('hola!');        
+
+        $('#buscar').click(function(){
+            $('#loading').show();
+            
+            $("#buscar").prop('disabled', true);
+            $("#tipo").prop('disabled', true);
+            $("#txt").prop('disabled', true);
+            
+            var tipo = $('#tipo').val();
+            var txt = $('#txt').val().toUpperCase();
+            var doc_id = '1hKFY-6IF-VXodKwuO9rp62Js4-Lndn4U-UHwwzxhro0';
+            var sheet_name ='padron-final';
+            var url = 'https://script.google.com/macros/s/AKfycbzGvKKUIaqsMuCj7-A2YRhR-f7GZjl4kSxSN1YyLkS01_CfiyE/exec'
+            var url_final = url + '?id=' +  doc_id +'&sheet='+ sheet_name + '&' + tipo + '=' + txt;
+            // var data = {'id': doc_id, 'sheet': sheet_name, tipo: tipo}
+            var xhr = $.get(url_final);
+
+            xhr.done(function(data) {
+                $('#resultados').html("Resultados: " + data.records.length);
+                $.each(data.records, function(i, votante){
+                    $('#resultados').append('<br>DNI: <b>'+votante.DNI+'</b> (Tipo: '+votante.TIPO_DNI+'). Mesa: <b>'+votante.mesa+'</b>. Escuela <b>'+votante.Escuela+'</b>. <b>' +votante.NOMBRE+ ' ' +votante.APELLIDO+'</b>');
+                    
+                })
+            })
+            xhr.fail(function(error) {
+                $('#resultados').html('ERROR: ' +  error);
+            })
+
+            xhr.always(function() {
+                $('#loading').hide();
+                $("#buscar").prop('disabled', false);
+                $("#tipo").prop('disabled', false);
+                $("#txt").prop('disabled', false);
+            })
+        });
+        
     });
 </script>
 
