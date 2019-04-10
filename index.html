@@ -74,6 +74,7 @@
                 $('#resultados').html("Resultados: " + data.records.length);
                 $.each(data.records, function(i, votante){
                     $('#resultados').append('<br>DNI: <b>'+votante.DNI+'</b> (Tipo: '+votante.TIPO_DNI+'). Mesa: <b>'+votante.mesa+'</b>. Escuela <b>'+votante.Escuela+'</b>. <b>' +votante.NOMBRE+ ' ' +votante.APELLIDO+'</b>');
+                    $('#resultados').append('<hr>');
                     
                 })
             })
